@@ -1,6 +1,0 @@
-node_modules
-.git
-.graphify
-data/orders.json
-data/*.tmp
-*.md
