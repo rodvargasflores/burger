@@ -4,6 +4,7 @@
   "description": "App para pedir hamburguesas",
   "main": "server.js",
   "scripts": {
+    "build": "echo build",
     "start": "node server.js"
   },
   "engines": {

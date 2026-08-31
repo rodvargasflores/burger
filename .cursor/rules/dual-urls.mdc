@@ -1,0 +1,17 @@
+---
+description: Keep guest (/) and kitchen (/cocina) URLs aligned on every change
+alwaysApply: true
+---
+
+# Dual URLs
+
+The same `public/index.html` + `public/js/app.js` serve both entry points:
+
+- Guests: `/`
+- Kitchen: `/cocina`
+
+`isKitchenStation` is the only difference. Every UI, API, polling, toast, sound, or ticket change must be checked on both URLs.
+
+- Guests can view tickets but never change status and never hear kitchen dings.
+- Kitchen always polls, can mark ready / return, and gets sound + toast for new orders.
+- Do not add a second frontend. Gate behavior in the shared client.
