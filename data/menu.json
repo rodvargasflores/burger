@@ -1,0 +1,69 @@
+{
+  "ingredients": [
+    { "id": "pan", "name": "Pan" },
+    { "id": "carne", "name": "Carne de res" },
+    { "id": "doble-carne", "name": "Doble carne" },
+    { "id": "pollo", "name": "Pechuga de pollo" },
+    { "id": "queso", "name": "Queso cheddar" },
+    { "id": "lechuga", "name": "Lechuga" },
+    { "id": "tomate", "name": "Tomate" },
+    { "id": "cebolla", "name": "Cebolla" },
+    { "id": "pepinillos", "name": "Pepinillos" },
+    { "id": "bacon", "name": "Bacon" },
+    { "id": "salsa-especial", "name": "Salsa especial" },
+    { "id": "ketchup", "name": "Ketchup" },
+    { "id": "mostaza", "name": "Mostaza" },
+    { "id": "mayo", "name": "Mayonesa" },
+    { "id": "bbq", "name": "Salsa BBQ" }
+  ],
+  "burgers": [
+    {
+      "id": "clasica",
+      "name": "La Clásica",
+      "description": "Carne, queso, lechuga, tomate y ketchup.",
+      "price": 4.5,
+      "style": "clasica",
+      "defaultIngredients": ["pan", "carne", "queso", "lechuga", "tomate", "ketchup"]
+    },
+    {
+      "id": "doble-smash",
+      "name": "Doble Smash",
+      "description": "Dos carnes, queso, cebolla y pepinillos.",
+      "price": 6.9,
+      "style": "doble",
+      "defaultIngredients": ["pan", "doble-carne", "queso", "cebolla", "pepinillos", "mostaza", "ketchup"]
+    },
+    {
+      "id": "casa",
+      "name": "Especial de la casa",
+      "description": "Carne, queso, lechuga, cebolla y salsa especial.",
+      "price": 6.2,
+      "style": "casa",
+      "defaultIngredients": ["pan", "carne", "queso", "lechuga", "cebolla", "pepinillos", "salsa-especial"]
+    },
+    {
+      "id": "bbq-bacon",
+      "name": "BBQ Bacon",
+      "description": "Carne, bacon, queso y salsa BBQ.",
+      "price": 7.1,
+      "style": "bbq",
+      "defaultIngredients": ["pan", "carne", "bacon", "queso", "cebolla", "bbq"]
+    },
+    {
+      "id": "pollo-crunch",
+      "name": "Pollo Crunch",
+      "description": "Pollo crujiente, lechuga y mayonesa.",
+      "price": 5.8,
+      "style": "pollo",
+      "defaultIngredients": ["pan", "pollo", "lechuga", "tomate", "mayo"]
+    },
+    {
+      "id": "cheese",
+      "name": "Cheese Deluxe",
+      "description": "Carne, doble queso, pepinillos y mostaza.",
+      "price": 5.4,
+      "style": "cheese",
+      "defaultIngredients": ["pan", "carne", "queso", "pepinillos", "cebolla", "mostaza", "ketchup"]
+    }
+  ]
+}
