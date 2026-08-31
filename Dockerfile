@@ -6,6 +6,7 @@ RUN npm ci --omit=dev
 
 COPY server.js ./
 COPY data/menu.json ./data/menu.json
+COPY data/party.json ./data/party.json
 COPY public ./public
 
 ENV NODE_ENV=production
