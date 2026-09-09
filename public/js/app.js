@@ -50,9 +50,10 @@ const els = {
 };
 
 function money(value) {
-  return new Intl.NumberFormat("es-ES", {
+  return new Intl.NumberFormat("es-CL", {
     style: "currency",
-    currency: "USD",
+    currency: "CLP",
+    maximumFractionDigits: 0,
   }).format(value);
 }
 
@@ -160,6 +161,24 @@ function kitchenNoteText() {
     parts.push(`${ices} helados`);
   }
   return `${parts.join(" y ")} en cocina.`;
+}
+
+function catalogIngredients() {
+  return Array.isArray(state.menu.ingredients) ? state.menu.ingredients : [];
+}
+
+function burgerBaseItems(burger) {
+  const ids = Array.isArray(burger?.baseIngredients) ? burger.baseIngredients : [];
+  const byId = new Map(catalogIngredients().map((item) => [item.id, item]));
+  if (ids.length > 0) {
+    return ids.map((id) => byId.get(id)).filter(Boolean);
+  }
+  return catalogIngredients().filter((item) => item.base);
+}
+
+function burgerExtraItems(burger) {
+  const base = new Set(burgerBaseItems(burger).map((item) => item.id));
+  return catalogIngredients().filter((item) => !item.base && !base.has(item.id));
 }
 
 function iceCreamMenu() {
@@ -385,9 +404,17 @@ function openBurgerCustomizer(burger) {
   els.fieldsetServing.hidden = true;
   els.fieldsetFlavors.hidden = true;
 
-  const defaults = new Set(burger.defaultIngredients);
+  const defaults = new Set(burger.defaultIngredients || []);
+  const extras = burgerExtraItems(burger);
+  const bases = burgerBaseItems(burger);
   els.ingredientList.replaceChildren(
-    ...state.menu.ingredients.map((ingredient) => {
+    ...bases.map((ingredient) => {
+      const chip = document.createElement("span");
+      chip.className = "chip is-locked";
+      chip.textContent = ingredient.name;
+      return chip;
+    }),
+    ...extras.map((ingredient) => {
       const label = document.createElement("label");
       label.className = "chip";
       label.innerHTML = `
@@ -582,11 +609,6 @@ async function submitBurgerOrder(customerName) {
   const ingredients = selectedIngredients();
   if (!state.selectedBurger) {
     els.formError.textContent = "Selecciona una hamburguesa.";
-    els.formError.hidden = false;
-    return null;
-  }
-  if (ingredients.length === 0) {
-    els.formError.textContent = "Deja al menos un ingrediente.";
     els.formError.hidden = false;
     return null;
   }

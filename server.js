@@ -106,6 +106,32 @@ function validateName(customerName) {
   return "";
 }
 
+function catalogIngredients(menu) {
+  return Array.isArray(menu?.ingredients) ? menu.ingredients : [];
+}
+
+function burgerBaseIds(burger, menu) {
+  const listed = Array.isArray(burger?.baseIngredients) ? burger.baseIngredients : [];
+  if (listed.length > 0) {
+    return listed.map((id) => asText(id)).filter(Boolean);
+  }
+  return catalogIngredients(menu)
+    .filter((item) => item.base)
+    .map((item) => item.id);
+}
+
+function selectableIngredientIds(burger, menu) {
+  const base = new Set(burgerBaseIds(burger, menu));
+  return catalogIngredients(menu)
+    .filter((item) => !item.base && !base.has(item.id))
+    .map((item) => item.id);
+}
+
+function ingredientName(menu, id) {
+  const found = catalogIngredients(menu).find((item) => item.id === id);
+  return found ? found.name : id;
+}
+
 function validateBurgerOrder(body, menu) {
   const customerName = asText(body?.customerName);
   const nameError = validateName(customerName);
@@ -114,30 +140,27 @@ function validateBurgerOrder(body, menu) {
   }
 
   const burgerId = asText(body?.burgerId);
-  const ingredients = Array.isArray(body?.ingredients) ? body.ingredients : null;
+  const extrasIn = Array.isArray(body?.ingredients) ? body.ingredients : [];
   const burger = (menu.burgers || []).find((item) => item.id === burgerId);
   if (!burger) {
     return { error: "Selecciona una hamburguesa de la carta." };
   }
 
-  if (!ingredients) {
-    return { error: "Selecciona los ingredientes." };
-  }
+  const selectable = new Set(selectableIngredientIds(burger, menu));
+  const extras = [
+    ...new Set(extrasIn.map((id) => asText(id)).filter((id) => selectable.has(id))),
+  ];
+  const unknown = extrasIn
+    .map((id) => asText(id))
+    .filter(Boolean)
+    .filter((id) => !selectable.has(id) && !burgerBaseIds(burger, menu).includes(id));
 
-  const allowed = new Set((menu.ingredients || []).map((item) => item.id));
-  const unique = [...new Set(ingredients.map((id) => asText(id)).filter(Boolean))];
-
-  if (unique.length === 0) {
-    return { error: "La hamburguesa debe tener al menos un ingrediente." };
-  }
-
-  if (unique.some((id) => !allowed.has(id))) {
+  if (unknown.length > 0) {
     return { error: "Hay un ingrediente que no está en la carta." };
   }
 
-  const ingredientNames = unique.map(
-    (id) => menu.ingredients.find((item) => item.id === id).name
-  );
+  const ingredients = [...burgerBaseIds(burger, menu), ...extras];
+  const ingredientNames = ingredients.map((id) => ingredientName(menu, id));
 
   return {
     order: {
@@ -148,7 +171,7 @@ function validateBurgerOrder(body, menu) {
       burgerName: burger.name,
       productName: burger.name,
       price: burger.price,
-      ingredients: unique,
+      ingredients,
       ingredientNames,
       createdAt: new Date().toISOString(),
       status: "cocina",
