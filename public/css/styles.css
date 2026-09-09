@@ -439,6 +439,13 @@ legend {
   background: #fff4e5;
 }
 
+.chip.is-locked {
+  cursor: default;
+  background: #f3e6d2;
+  color: var(--ink);
+  font-weight: 800;
+}
+
 .field {
   display: grid;
   gap: 6px;
