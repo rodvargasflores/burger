@@ -190,7 +190,26 @@ function iceCreamMenu() {
     ...iceCream,
     name: iceCream.name || "Helado",
     flavors: Array.isArray(iceCream.flavors) ? iceCream.flavors : [],
+    pricePerFlavor: Number(iceCream.pricePerFlavor) > 0 ? Number(iceCream.pricePerFlavor) : 10000,
   };
+}
+
+function iceCreamPrice(iceCream, flavorCount) {
+  const count = Math.max(0, flavorCount);
+  return iceCream.pricePerFlavor * count;
+}
+
+function refreshIceCreamPrice() {
+  const iceCream = iceCreamMenu();
+  if (!iceCream || state.orderKind !== "iceCream") {
+    return;
+  }
+  const count = selectedFlavors().length;
+  if (count === 0) {
+    els.sheetPrice.textContent = `${money(iceCream.pricePerFlavor)} por sabor`;
+    return;
+  }
+  els.sheetPrice.textContent = money(iceCreamPrice(iceCream, count));
 }
 
 async function api(path, options) {
@@ -326,7 +345,6 @@ function burgerCard(burger) {
 }
 
 function iceCreamCard(iceCream) {
-  const from = Math.min(...iceCream.servings.map((item) => Number(item.price) || 0));
   const button = document.createElement("button");
   button.type = "button";
   button.className = "card is-helado";
@@ -336,7 +354,7 @@ function iceCreamCard(iceCream) {
     </div>
     <h3>${escapeHtml(iceCream.name)}</h3>
     <p>${escapeHtml(iceCream.description || "Elige cono, vaso o ambos.")}</p>
-    <span class="price">Desde ${money(from)}</span>
+    <span class="price">${money(iceCream.pricePerFlavor)} por sabor</span>
   `;
   button.addEventListener("click", () => openIceCreamCustomizer(iceCream));
   return button;
@@ -437,7 +455,6 @@ function openIceCreamCustomizer(iceCream) {
   els.sheetName.textContent = iceCream.name;
   els.sheetDesc.textContent =
     iceCream.description || "Elige cono, vaso o ambos.";
-  els.sheetPrice.textContent = "Elige presentación";
   els.customerName.value = "";
   els.formError.hidden = true;
   els.fieldsetIngredients.hidden = true;
@@ -450,7 +467,7 @@ function openIceCreamCustomizer(iceCream) {
       label.className = "chip";
       label.innerHTML = `
         <input type="radio" name="ice-serving" value="${escapeHtml(serving.id)}" />
-        ${escapeHtml(serving.name)} · ${money(serving.price)}
+        ${escapeHtml(serving.name)}
       `;
       return label;
     })
@@ -468,6 +485,7 @@ function openIceCreamCustomizer(iceCream) {
     })
   );
 
+  refreshIceCreamPrice();
   els.dialog.showModal();
 }
 
@@ -722,16 +740,8 @@ els.customerName.addEventListener("keydown", (event) => {
     submitOrder();
   }
 });
-els.servingList.addEventListener("change", () => {
-  const iceCream = iceCreamMenu();
-  if (!iceCream) {
-    return;
-  }
-  const serving = iceCream.servings.find((item) => item.id === selectedServing());
-  if (serving) {
-    els.sheetPrice.textContent = money(serving.price);
-  }
-});
+els.servingList.addEventListener("change", refreshIceCreamPrice);
+els.flavorList.addEventListener("change", refreshIceCreamPrice);
 els.ordersList.addEventListener("click", async (event) => {
   if (!isKitchenStation) {
     return;
