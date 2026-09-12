@@ -216,6 +216,8 @@ function validateIceCreamOrder(body, menu) {
   );
 
   const productName = asText(iceCream.name) || "Helado";
+  const unit = Number(iceCream.pricePerFlavor);
+  const pricePerFlavor = Number.isFinite(unit) && unit > 0 ? unit : 10000;
 
   return {
     order: {
@@ -226,7 +228,7 @@ function validateIceCreamOrder(body, menu) {
       burgerName: productName,
       servingId: serving.id,
       servingName: serving.name,
-      price: Number(serving.price) || 0,
+      price: pricePerFlavor * unique.length,
       flavors: unique,
       flavorNames,
       createdAt: new Date().toISOString(),

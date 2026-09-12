@@ -25,16 +25,15 @@
     "id": "helado",
     "name": "Helado",
     "description": "Elige cono, vaso o ambos.",
+    "pricePerFlavor": 10000,
     "servings": [
-      { "id": "cono", "name": "Cono", "price": 2.5 },
-      { "id": "vaso", "name": "Vaso", "price": 2.5 },
-      { "id": "ambos", "name": "Cono y vaso", "price": 5 }
+      { "id": "cono", "name": "Cono" },
+      { "id": "vaso", "name": "Vaso" },
+      { "id": "ambos", "name": "Cono y vaso" }
     ],
     "flavors": [
-      { "id": "chocolate", "name": "Chocolate" },
-      { "id": "vainilla", "name": "Vainilla" },
-      { "id": "frutos-rojos", "name": "Frutos rojos" },
-      { "id": "dulce-de-leche", "name": "Dulce de leche" }
+      { "id": "ddl-nuez", "name": "Dulce de leche con nuez" },
+      { "id": "tramontana", "name": "Tramontana" }
     ]
   }
 }
